@@ -62,12 +62,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String searchQuery = '';
   // This method is rerun every time setState is called, for instance as done
   @override
   Widget build(BuildContext context) {
-    //sort the schools alphabetically by name
-    final sortedSchools = [...schools]
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    //filter schools based on the search query
+    final filteredSchools = schools.where((school) {
+      return school.name.toLowerCase().contains(
+      searchQuery.toLowerCase(),
+      );
+    }).toList();
+    //sort the filtered schools alphabetically by name
+    filteredSchools.sort((a, b) =>
+      a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     return AppShell(
       //loads the list of schools from the mockdata
@@ -79,16 +86,14 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 // Search bar
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Søg efter skole',
-                      prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
+                  child: SearchBar(
+                    hintText: 'Søg efter skole',
+                    leading: const Icon(Icons.search),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
                   ),
                 ),
 
@@ -108,9 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // School cards
           Expanded(
             child: ListView.builder(
-              itemCount: sortedSchools.length,
+              itemCount: filteredSchools.length,
               itemBuilder: (context, index) {
-                final school = sortedSchools[index];
+                final school = filteredSchools[index];
                 return SchoolCard(
                   school: school,
                   onTap: () => Navigator.pushNamed(
@@ -148,8 +153,7 @@ final schools = [
     titleText: 'Velkommen til Allerød Privatskole',
     descriptionText:
         'En kvalitetsorienteret skole med fokus på elevernes udvikling.',
-    imageUrl:
-        'https://via.placeholder.com/800x400'
+    imageUrl: 'https://via.placeholder.com/800x400',
   ),
 
   School(
