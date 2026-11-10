@@ -46,11 +46,53 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return AppShell(
       //loads the list of schools from the mockdata
-      body: ListView.builder(
-        itemCount: schools.length,
-        itemBuilder: (context, index) {
-          return SchoolCard(school: schools[index]);
-        },
+      body: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // Search bar
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Søg efter skole',
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 12), //space
+
+              // Filter button
+              IconButton(
+                iconSize: 40,
+                icon: const Icon(Icons.tune),
+                onPressed: () {
+                  // Open filter menu
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // School cards
+        Expanded(
+          child: ListView.builder(
+            itemCount: schools.length,
+            itemBuilder: (context, index) {
+              return SchoolCard(
+                school: schools[index],
+              );
+            },
+          ),
+        ),
+      ],
       ),
     );
   }
