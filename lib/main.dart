@@ -148,6 +148,8 @@ final schools = [
     titleText: 'Velkommen til Allerød Privatskole',
     descriptionText:
         'En kvalitetsorienteret skole med fokus på elevernes udvikling.',
+    imageUrl:
+        'https://via.placeholder.com/800x400'
   ),
 
   School(

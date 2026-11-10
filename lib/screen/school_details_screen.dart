@@ -27,6 +27,7 @@ class SchoolDetailsScreen extends StatelessWidget {
             Text(school.name, style: Theme.of(context).textTheme.headlineSmall),
 
             if (school.imageUrl != null) ...[
+              const SizedBox(height: 16),
               Center(
                 child: Image.network(
                   school.imageUrl!,
