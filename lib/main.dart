@@ -4,6 +4,8 @@ import 'package:hovedopgave_flutter_app/screen/about_us_screen.dart';
 import 'package:hovedopgave_flutter_app/screen/board_screen.dart';
 import 'package:hovedopgave_flutter_app/screen/secretariat_screen.dart';
 import 'package:hovedopgave_flutter_app/widgets/app_shell.dart';
+import 'package:hovedopgave_flutter_app/models/school_model.dart';
+import 'package:hovedopgave_flutter_app/widgets/school_card.dart';
 
 void main() {
   runApp(DevicePreview(builder: (context) => MyApp()));
@@ -21,7 +23,8 @@ class MyApp extends StatelessWidget {
         '/about-us': (context) => const AboutUsScreen(),
         '/board': (context) => const BoardScreen(),
         '/secretariat': (context) => const SecretariatScreen(),
-        '/main': (context) => const MyHomePage(title: 'Danmarks Private Skoler'),
+        '/main': (context) =>
+            const MyHomePage(title: 'Danmarks Private Skoler'),
       },
       home: const MyHomePage(title: 'Danmarks Private Skoler'),
     );
@@ -38,38 +41,60 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   // This method is rerun every time setState is called, for instance as done
   @override
   Widget build(BuildContext context) {
     return AppShell(
-      // Center is a layout widget. It takes a single child and positions it
-      // in the middle of the parent.
-      body: Center(
-        //arranges children vertically in a column
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      //loads the list of schools from the mockdata
+      body: ListView.builder(
+        itemCount: schools.length,
+        itemBuilder: (context, index) {
+          return SchoolCard(school: schools[index]);
+        },
       ),
     );
   }
 }
+
+//mockdata DELETE later
+final schools = [
+  School(
+    name: 'Allerød Privatskole',
+    address: 'Sortemosevej 15',
+    zipCode: 3450,
+    city: 'Allerød',
+    phoneNumber: '48 14 00 00',
+    yearFounded: 1995,
+    website: 'http://alleroedprivatskole.dk',
+    email: 'info@alleroedprivatskole.dk',
+    numberOfClasses: 10,
+    levelStart: '0.',
+    levelEnd: '9.',
+    klassekvotient: '22',
+    numberOfStudents: 200,
+    numberOfStudentsInSFO: 50,
+    titleText: 'Velkommen til Allerød Privatskole',
+    descriptionText:
+        'En kvalitetsorienteret skole med fokus på elevernes udvikling.',
+  ),
+
+  School(
+    name: 'Amager Privatskole',
+    address: 'Hornevej 1',
+    zipCode: 2770,
+    city: 'Kastrup',
+    phoneNumber: '32 14 00 00',
+    yearFounded: 1998,
+    website: 'https://www.amagerprivatskole.dk',
+    email: 'info@amagerprivatskole.dk',
+    numberOfClasses: 12,
+    levelStart: '0.',
+    levelEnd: '10.',
+    klassekvotient: '22',
+    numberOfStudents: 250,
+    numberOfStudentsInSFO: 60,
+    titleText: 'Velkommen til Amager Privatskole',
+    descriptionText:
+        'En moderne skole med fokus på innovation og elevernes udvikling.',
+  ),
+];
