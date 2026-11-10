@@ -2,7 +2,7 @@ class School{
   //final means it can only be set once and cannot be changed after that.
   final String name;
   String address;
-  int postalCode;
+  int zipCode;
   String city;
   String phoneNumber;
   int yearFounded;
@@ -21,7 +21,7 @@ class School{
   School({
     required this.name, 
     required this.address, 
-    required this.postalCode, 
+    required this.zipCode, 
     required this.city,
     required this.phoneNumber,
     required this.yearFounded,
