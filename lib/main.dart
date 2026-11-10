@@ -6,6 +6,7 @@ import 'package:hovedopgave_flutter_app/screen/secretariat_screen.dart';
 import 'package:hovedopgave_flutter_app/widgets/app_shell.dart';
 import 'package:hovedopgave_flutter_app/models/school_model.dart';
 import 'package:hovedopgave_flutter_app/widgets/school_card.dart';
+import 'package:hovedopgave_flutter_app/screen/school_details_screen.dart';
 
 void main() {
   runApp(DevicePreview(builder: (context) => MyApp()));
@@ -23,6 +24,26 @@ class MyApp extends StatelessWidget {
         '/about-us': (context) => const AboutUsScreen(),
         '/board': (context) => const BoardScreen(),
         '/secretariat': (context) => const SecretariatScreen(),
+        '/school-details': (context) {
+          final school = ModalRoute.of(context)?.settings.arguments;
+          if (school is! School) {
+            return AppShell(
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('No school was provided.'),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Back to schools'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+          return SchoolDetailsScreen(school: school);
+        },
         '/main': (context) =>
             const MyHomePage(title: 'Danmarks Private Skoler'),
       },
@@ -89,7 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListView.builder(
               itemCount: sortedSchools.length,
               itemBuilder: (context, index) {
-                return SchoolCard(school: sortedSchools[index]);
+                final school = sortedSchools[index];
+                return SchoolCard(
+                  school: school,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    '/school-details',
+                    arguments: school,
+                  ),
+                );
               },
             ),
           ),
@@ -108,12 +137,12 @@ final schools = [
     city: 'Allerød',
     phoneNumber: '48 14 00 00',
     yearFounded: 1995,
-    website: 'http://alleroedprivatskole.dk',
+    website: 'alleroedprivatskole.dk',
     email: 'info@alleroedprivatskole.dk',
     numberOfClasses: 10,
     levelStart: '0.',
     levelEnd: '9.',
-    klassekvotient: '22',
+    classQuota: '22',
     numberOfStudents: 200,
     numberOfStudentsInSFO: 50,
     titleText: 'Velkommen til Allerød Privatskole',
@@ -128,17 +157,15 @@ final schools = [
     city: 'Kastrup',
     phoneNumber: '32 14 00 00',
     yearFounded: 1998,
-    website: 'https://www.amagerprivatskole.dk',
+    website: 'www.amagerprivatskole.dk',
     email: 'info@amagerprivatskole.dk',
     numberOfClasses: 12,
     levelStart: '0.',
     levelEnd: '10.',
-    klassekvotient: '22',
+    classQuota: '22',
     numberOfStudents: 250,
     numberOfStudentsInSFO: 60,
     titleText: 'Velkommen til Amager Privatskole',
-    descriptionText:
-        'En moderne skole med fokus på innovation og elevernes udvikling.',
   ),
 
   School(
@@ -153,12 +180,9 @@ final schools = [
     numberOfClasses: 15,
     levelStart: '0.',
     levelEnd: '10.',
-    klassekvotient: '22',
+    classQuota: '22',
     numberOfStudents: 300,
     numberOfStudentsInSFO: 75,
-    titleText: 'Velkommen til Borup Privatskole',
-    descriptionText:
-        'En pædagogisk skole med fokus på elevernes udvikling og velvære.',
   ),
 
   School(
@@ -173,7 +197,7 @@ final schools = [
     numberOfClasses: 15,
     levelStart: '0.',
     levelEnd: '10.',
-    klassekvotient: '22',
+    classQuota: '22',
     numberOfStudents: 300,
     numberOfStudentsInSFO: 75,
     titleText: 'Velkommen til Aalborg Privatskole',

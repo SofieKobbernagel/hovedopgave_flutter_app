@@ -11,7 +11,7 @@ class School{
   int numberOfClasses;
   String levelStart;
   String levelEnd;
-  String klassekvotient;
+  String classQuota;
   int numberOfStudents;
   int numberOfStudentsInSFO;
   String? titleText;
@@ -30,7 +30,7 @@ class School{
     required this.numberOfClasses,
     required this.levelStart,
     required this.levelEnd,
-    required this.klassekvotient,
+    required this.classQuota,
     required this.numberOfStudents,
     required this.numberOfStudentsInSFO,
     this.titleText,

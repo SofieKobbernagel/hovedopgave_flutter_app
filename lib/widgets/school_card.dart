@@ -4,12 +4,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SchoolCard extends StatelessWidget {
   final School school;
+  final VoidCallback? onTap;
 
   //constructor
   const SchoolCard({
     super.key,
     //when creating a SchoolCard, you must provide a School object
     required this.school,
+    this.onTap,
   });
 
   @override
@@ -26,11 +28,12 @@ class SchoolCard extends StatelessWidget {
     return Card(
       //adds space around the card
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: InkWell(onTap: onTap, //calls the onTap function when the card is tapped
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Text(school.name, style: const TextStyle(fontSize: 24)),
             const Divider(
               color: Color.fromRGBO(188, 49, 43, 1),
@@ -55,6 +58,7 @@ class SchoolCard extends StatelessWidget {
               ),
             ),
           ],
+          ),
         ),
       ),
     );
