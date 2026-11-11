@@ -21,6 +21,24 @@ class _FilterSheetState extends State<FilterSheet> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Text(
+            'Filter',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -28,15 +46,22 @@ class _FilterSheetState extends State<FilterSheet> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
-          CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Grundskoler'),
-            value: isGrundskole,
-            onChanged: (value) {  
-              setState(() {
-                isGrundskole = value ?? false;
-              });
-            },
+
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Grundskoler'),
+              value: isGrundskole,
+              onChanged: (value) {  
+                setState(() {
+                  isGrundskole = value ?? false;
+                });
+              },
+            ),
           ),
            CheckboxListTile(
             contentPadding: EdgeInsets.zero,
@@ -58,16 +83,23 @@ class _FilterSheetState extends State<FilterSheet> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
-          CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Region Hovedstaden'),
-            value: false,
-            onChanged: (value) {
-              setState(() {
-                // Handle checkbox state change
-              });
-            },
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Region Hovedstaden'),
+              value: false,
+              onChanged: (value) {
+                setState(() {
+                  // Handle checkbox state change
+                });
+              },
+            ),
           ),
+
            CheckboxListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Region Midtjylland'),
@@ -78,16 +110,24 @@ class _FilterSheetState extends State<FilterSheet> {
               });
             },
           ),
-           CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Region Nordjylland'),
-            value: false,
-            onChanged: (value) {
-              setState(() {
-                // Handle checkbox state change
-              });
-            },
+
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Region Nordjylland'),
+              value: false,
+              onChanged: (value) {
+                setState(() {
+                  // Handle checkbox state change
+                });
+              },
+            ),
           ),
+
           CheckboxListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Region Sjælland'),
@@ -98,15 +138,22 @@ class _FilterSheetState extends State<FilterSheet> {
               });
             },
           ),
-          CheckboxListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Region Syddanmark'),
-            value: false,
-            onChanged: (value) {
-              setState(() {
-                // Handle checkbox state change
-              });
-            },
+
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Region Syddanmark'),
+              value: false,
+              onChanged: (value) {
+                setState(() {
+                  // Handle checkbox state change
+                });
+              },
+            ),
           ),
 
           const SizedBox(height: 16),
