@@ -7,6 +7,7 @@ import 'package:hovedopgave_flutter_app/widgets/app_shell.dart';
 import 'package:hovedopgave_flutter_app/models/school_model.dart';
 import 'package:hovedopgave_flutter_app/widgets/school_card.dart';
 import 'package:hovedopgave_flutter_app/screen/school_details_screen.dart';
+import 'package:hovedopgave_flutter_app/widgets/filter_sheet.dart';
 
 void main() {
   runApp(DevicePreview(builder: (context) => MyApp()));
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -60,6 +62,7 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
 
 class _MyHomePageState extends State<MyHomePage> {
   String searchQuery = '';
@@ -104,6 +107,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: const Icon(Icons.tune),
                   onPressed: () {
                     // Open filter menu
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return const FilterSheet();
+                      },
+                    );
                   },
                 ),
               ],
@@ -140,6 +150,7 @@ final schools = [
     address: 'Sortemosevej 15',
     zipCode: 3450,
     city: 'Allerød',
+    region: 'Hovedstaden',
     phoneNumber: '48 14 00 00',
     yearFounded: 1995,
     website: 'alleroedprivatskole.dk',
@@ -161,6 +172,7 @@ final schools = [
     address: 'Hornevej 1',
     zipCode: 2770,
     city: 'Kastrup',
+    region: 'Hovedstaden',
     phoneNumber: '32 14 00 00',
     yearFounded: 1998,
     website: 'www.amagerprivatskole.dk',
@@ -177,8 +189,9 @@ final schools = [
   School(
     name: 'Borup Privatskole',
     address: 'Skolevej 5',
-    zipCode: 8000,
-    city: 'Aarhus C',
+    zipCode: 4140,
+    city: 'Borup',
+    region: 'Sjælland',
     phoneNumber: '86 12 34 56',
     yearFounded: 2000,
     website: 'https://www.borupprivatskole.dk',
@@ -196,6 +209,7 @@ final schools = [
     address: 'Privatskolevej 10',
     zipCode: 9000,
     city: 'Aalborg',
+    region: 'Nordjylland',
     phoneNumber: '98 12 34 56',
     yearFounded: 2005,
     website: 'https://www.aalborgprivatskole.dk',
