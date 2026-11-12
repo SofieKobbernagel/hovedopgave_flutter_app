@@ -16,6 +16,17 @@ class SchoolCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final cardTextStyle = textTheme.bodyMedium?.copyWith(
+      color: const Color(0xFF535353),
+    );
+    final titleStyle = textTheme.titleLarge?.copyWith(
+      fontFamily: 'PF Handbook Pro',
+      fontWeight: FontWeight.w500,
+      fontSize: 20,
+      color: const Color(0xFF535353),
+    );
+
     String website = school.website.trim();
     //check if the website starts with "http://" or "https://",
     //if not, add "https://" to the beginning of the website so link works
@@ -34,17 +45,20 @@ class SchoolCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Text(school.name, style: const TextStyle(fontSize: 24)),
+            Text(
+              school.name,
+              style: titleStyle,
+            ),
             const Divider(
               color: Color.fromRGBO(188, 49, 43, 1),
               //evt. thickness
             ),
-            Text(school.address),
+            Text(school.address, style: cardTextStyle),
             const SizedBox(
               height: 8,
             ), //adds space between the address and the zip code/city
 
-            Text('${school.zipCode} ${school.city}'),
+            Text('${school.zipCode} ${school.city}', style: cardTextStyle),
             const SizedBox(height: 8),
 
             //link to the school's website, opens in a new tab
@@ -54,7 +68,7 @@ class SchoolCard extends StatelessWidget {
               },
               child: Text(
                 school.website,
-                style: const TextStyle(color: Colors.blue),
+                style: const TextStyle(color: Color(0xFFC00000)),
               ),
             ),
           ],

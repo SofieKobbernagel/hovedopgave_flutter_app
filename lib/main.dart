@@ -18,8 +18,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeData(fontFamily: 'Segoe UI');
+    final titleTextTheme = ThemeData(fontFamily: 'PF Handbook Pro').textTheme;
+
     return MaterialApp(
       title: 'Danmarks Private Skoler',
+      theme: theme.copyWith(
+        textTheme: theme.textTheme.copyWith(
+          displayLarge: titleTextTheme.displayLarge,
+          displayMedium: titleTextTheme.displayMedium,
+          displaySmall: titleTextTheme.displaySmall,
+          headlineLarge: titleTextTheme.headlineLarge,
+          headlineMedium: titleTextTheme.headlineMedium,
+          headlineSmall: titleTextTheme.headlineSmall,
+          titleLarge: titleTextTheme.titleLarge,
+          titleMedium: titleTextTheme.titleMedium,
+          titleSmall: titleTextTheme.titleSmall,
+        ),
+      ),
       routes: {
         '/about-us': (context) => const AboutUsScreen(),
         '/board': (context) => const BoardScreen(),

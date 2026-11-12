@@ -63,6 +63,66 @@ flutter:
   assets:
     - assets/images/
 
+  fonts:
+    - family: PF Handbook Pro
+      fonts:
+        - asset: assets/fonts/PFHandbookPro/PFHANDBOOKPRO-LIGHT.TTF
+          weight: 300
+        - asset: assets/fonts/PFHandbookPro/PFHANDBOOKPRO-MEDIUM.TTF
+          weight: 500
+        - asset: assets/fonts/PFHandbookPro/PFHANDBOOKPRO-BOLD.TTF
+          weight: 700
+        - asset: assets/fonts/PFHandbookPro/PFHANDBOOKPRO-LIGHTITALIC.TTF
+          style: italic
+        - asset: assets/fonts/PFHandbookPro/PFHANDBOOKPRO-BOLDITALIC.TTF
+          weight: 700
+          style: italic
+    - family: TW Cent
+      fonts:
+        - asset: assets/fonts/TWCent/TCM_____.TTF
+        - asset: assets/fonts/TWCent/TCB_____.TTF
+          weight: 700
+        - asset: assets/fonts/TWCent/TCMI____.TTF
+          style: italic
+        - asset: assets/fonts/TWCent/TCBI____.TTF
+          weight: 700
+          style: italic
+    - family: Segoe UI
+      fonts:
+        - asset: assets/fonts/SegoeUI/SEGOEUI.TTF
+        - asset: assets/fonts/SegoeUI/SEGOEUIB.TTF
+          weight: 700
+        - asset: assets/fonts/SegoeUI/SEGOEUII.TTF
+          style: italic
+        - asset: assets/fonts/SegoeUI/SEGOEUIZ.TTF
+          weight: 700
+          style: italic
+        - asset: assets/fonts/SegoeUI/SEGOEUISL.TTF
+          weight: 300
+        - asset: assets/fonts/SegoeUI/SEGUISLI.TTF
+          weight: 300
+          style: italic
+        - asset: assets/fonts/SegoeUI/SEGUISB.TTF
+          weight: 600
+        - asset: assets/fonts/SegoeUI/SEGUISBI.TTF
+          weight: 600
+          style: italic
+        - asset: assets/fonts/SegoeUI/SEGUIBL.TTF
+          weight: 900
+        - asset: assets/fonts/SegoeUI/SEGUIBLI.TTF
+          weight: 900
+          style: italic
+    - family: Verdana
+      fonts:
+        - asset: assets/fonts/Verdana/VERDANA.TTF
+        - asset: assets/fonts/Verdana/VERDANAB.TTF
+          weight: 700
+        - asset: assets/fonts/Verdana/VERDANAI.TTF
+          style: italic
+        - asset: assets/fonts/Verdana/VERDANAZ.TTF
+          weight: 700
+          style: italic
+  
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
