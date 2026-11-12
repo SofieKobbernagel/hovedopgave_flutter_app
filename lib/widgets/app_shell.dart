@@ -38,7 +38,7 @@ class AppShell extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.stars),
-                title: const Text('Medlemsskolern'),
+                title: const Text('Medlemsskolerne'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _openRoute(context, '/main'),
               ),

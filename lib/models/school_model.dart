@@ -14,7 +14,7 @@ class School{
   String levelEnd;
   String classQuota;
   int numberOfStudents;
-  int numberOfStudentsInSFO;
+  int? numberOfStudentsInSFO;
   String? titleText;
   String? descriptionText;
   String? imageUrl;
@@ -38,10 +38,10 @@ class School{
     required this.levelEnd,
     required this.classQuota,
     required this.numberOfStudents,
-    required this.numberOfStudentsInSFO,
+    this.numberOfStudentsInSFO,
     this.titleText,
     this.descriptionText,
     this.imageUrl,
-  }) : isGrundskole = levelStart != '1.G' || levelEnd != '3.G',
+  }) : isGrundskole = levelEnd != '3.G',
        isGymnasial = levelStart == '1.G' || levelEnd == '3.G';
 }

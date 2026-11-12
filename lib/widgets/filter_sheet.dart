@@ -1,54 +1,33 @@
 import 'package:flutter/material.dart';
 
-//needed for the filter sheet to work because it updates the state of
-//the filter sheet when the checkbox is clicked
-class FilterSheet extends StatefulWidget {
-  const FilterSheet({super.key});
+class FilterSheet extends StatelessWidget {
+  const FilterSheet({
+    super.key,
+    required this.isGrundskole,
+    required this.isGymnasial,
+    required this.selectedRegions,
+    required this.postalCodeRange,
+    required this.onGrundskoleChanged,
+    required this.onGymnasialChanged,
+    required this.onRegionChanged,
+    required this.onPostalCodeRangeChanged,
+    required this.onReset,
+  });
 
-  @override
-  State<FilterSheet> createState() => _FilterSheetState();
-}
-
-class _FilterSheetState extends State<FilterSheet> {
-  bool isGrundskole = false;
-  bool isGymnasial = false;
-  String? selectedRegion;
-  RangeValues _postalCodeRange = const RangeValues(1000, 9999);
-
-  void _setSchoolType(bool? selected, {required bool grundskole}) {
-    setState(() {
-      if (grundskole) {
-        isGrundskole = selected ?? false;
-        if (isGrundskole) isGymnasial = false;
-      } else {
-        isGymnasial = selected ?? false;
-        if (isGymnasial) isGrundskole = false;
-      }
-    });
-  }
-
-  void _setRegionSelected(String region, bool? selected) {
-    setState(() {
-      if (selected ?? false) {
-        selectedRegion = region;
-      } else if (selectedRegion == region) {
-        selectedRegion = null;
-      }
-    });
-  }
-
-  void _resetFilters() {
-    setState(() {
-      isGrundskole = false;
-      isGymnasial = false;
-      selectedRegion = null;
-      _postalCodeRange = const RangeValues(1000, 9999);
-    });
-  }
+  final bool isGrundskole;
+  final bool isGymnasial;
+  final Set<String> selectedRegions;
+  final RangeValues postalCodeRange;
+  final ValueChanged<bool> onGrundskoleChanged;
+  final ValueChanged<bool> onGymnasialChanged;
+  final void Function(String region, bool selected) onRegionChanged;
+  final ValueChanged<RangeValues> onPostalCodeRangeChanged;
+  final VoidCallback onReset;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      //max height on screen
       height: MediaQuery.of(context).size.height * 0.85,
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -57,6 +36,7 @@ class _FilterSheetState extends State<FilterSheet> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  //small mark at top that makes it clear you can tap out
                   Center(
                     child: Container(
                       width: 40,
@@ -83,25 +63,22 @@ class _FilterSheetState extends State<FilterSheet> {
                     ),
                   ),
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                  Material(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(8),
                     child: CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       title: const Text('  Grundskoler'),
                       value: isGrundskole,
-                      onChanged: (value) =>
-                          _setSchoolType(value, grundskole: true),
+                      onChanged: (value) => onGrundskoleChanged(value ?? false),
                     ),
                   ),
+
                   CheckboxListTile(
                     contentPadding: EdgeInsets.zero,
                     title: const Text('  Gymnasiale uddannelser'),
                     value: isGymnasial,
-                    onChanged: (value) =>
-                        _setSchoolType(value, grundskole: false),
+                    onChanged: (value) => onGymnasialChanged(value ?? false),
                   ),
 
                   const SizedBox(height: 16),
@@ -113,60 +90,56 @@ class _FilterSheetState extends State<FilterSheet> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+
+                  Material(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(8),
                     child: CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       title: const Text('  Region Hovedstaden'),
-                      value: selectedRegion == 'Hovedstaden',
+                      value: selectedRegions.contains('Hovedstaden'),
                       onChanged: (value) =>
-                          _setRegionSelected('Hovedstaden', value),
+                          onRegionChanged('Hovedstaden', value ?? false),
                     ),
                   ),
 
                   CheckboxListTile(
                     contentPadding: EdgeInsets.zero,
                     title: const Text('  Region Midtjylland'),
-                    value: selectedRegion == 'Midtjylland',
+                    value: selectedRegions.contains('Midtjylland'),
                     onChanged: (value) =>
-                        _setRegionSelected('Midtjylland', value),
+                        onRegionChanged('Midtjylland', value ?? false),
                   ),
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                  Material(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(8),
                     child: CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       title: const Text('  Region Nordjylland'),
-                      value: selectedRegion == 'Nordjylland',
+                      value: selectedRegions.contains('Nordjylland'),
                       onChanged: (value) =>
-                          _setRegionSelected('Nordjylland', value),
+                          onRegionChanged('Nordjylland', value ?? false),
                     ),
                   ),
 
                   CheckboxListTile(
                     contentPadding: EdgeInsets.zero,
                     title: const Text('  Region Sjælland'),
-                    value: selectedRegion == 'Sjælland',
-                    onChanged: (value) => _setRegionSelected('Sjælland', value),
+                    value: selectedRegions.contains('Sjælland'),
+                    onChanged: (value) =>
+                        onRegionChanged('Sjælland', value ?? false),
                   ),
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                  Material(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(8),
                     child: CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       title: const Text('  Region Syddanmark'),
-                      value: selectedRegion == 'Syddanmark',
+                      value: selectedRegions.contains('Syddanmark'),
                       onChanged: (value) =>
-                          _setRegionSelected('Syddanmark', value),
+                          onRegionChanged('Syddanmark', value ?? false),
                     ),
                   ),
 
@@ -182,8 +155,8 @@ class _FilterSheetState extends State<FilterSheet> {
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         Text(
-                          '${_postalCodeRange.start.round()} - '
-                          '${_postalCodeRange.end.round()}',
+                          '${postalCodeRange.start.round()} - '
+                          '${postalCodeRange.end.round()}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
@@ -191,14 +164,10 @@ class _FilterSheetState extends State<FilterSheet> {
                   ),
 
                   RangeSlider(
-                    values: _postalCodeRange,
+                    values: postalCodeRange,
                     min: 1000,
                     max: 9999,
-                    onChanged: (value) {
-                      setState(() {
-                        _postalCodeRange = value;
-                      });
-                    },
+                    onChanged: onPostalCodeRangeChanged,
                   ),
                 ],
               ),
@@ -206,15 +175,18 @@ class _FilterSheetState extends State<FilterSheet> {
           ),
 
           const SizedBox(height: 12),
+
           Row(
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: _resetFilters,
+                  onPressed: onReset,
                   child: const Text('Nulstil'),
                 ),
               ),
+
               const SizedBox(width: 12),
+              
               Expanded(
                 child: FilledButton(
                   onPressed: () => Navigator.pop(context),

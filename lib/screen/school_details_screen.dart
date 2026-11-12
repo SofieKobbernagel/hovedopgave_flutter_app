@@ -60,7 +60,9 @@ class SchoolDetailsScreen extends StatelessWidget {
             Text('Antal klassetrin: ${school.numberOfClasses}'),
             Text('Klassekvotient: ${school.classQuota}'),
             Text('Antal elever: ${school.numberOfStudents}'),
-            Text('Antal elever i SFO: ${school.numberOfStudentsInSFO}'),
+            if (school.numberOfStudentsInSFO != null)
+              Text('Antal elever i SFO: ${school.numberOfStudentsInSFO}'),
+            
 
             if (school.titleText != null) ...[
               const SizedBox(height: 16),
