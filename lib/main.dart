@@ -64,11 +64,15 @@ class MyApp extends StatelessWidget {
         '/main': (context) {
           final initialGrundskole =
               ModalRoute.of(context)?.settings.arguments == 'grundskoler';
+          final initialGymnasial =
+              ModalRoute.of(context)?.settings.arguments == 'gymnasier';
           return MyHomePage(
             title: 'Danmarks Private Skoler',
             initialGrundskole: initialGrundskole,
+            initialGymnasial: initialGymnasial,
           );
         },
+        
       },
       home: const MyHomePage(title: 'Danmarks Private Skoler'),
     );
@@ -80,10 +84,12 @@ class MyHomePage extends StatefulWidget {
     super.key,
     required this.title,
     this.initialGrundskole = false,
+    this.initialGymnasial = false,
   });
 
   final String title;
   final bool initialGrundskole;
+  final bool initialGymnasial;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -102,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     isGrundskole = widget.initialGrundskole;
+    isGymnasial = widget.initialGymnasial;
   }
 
 // Adds or removes a region from the selected region filters.

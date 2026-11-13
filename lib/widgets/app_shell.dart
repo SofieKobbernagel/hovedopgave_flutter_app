@@ -57,7 +57,11 @@ class AppShell extends StatelessWidget {
                       child: const Text('Grundskoler'),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () => _openRoute(
+                        context,
+                        '/main',
+                        arguments: 'gymnasier',
+                      ),
                       child: const Text('Gymnasiale uddannelser'),
                     ),
                   ],
