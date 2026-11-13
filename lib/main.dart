@@ -7,6 +7,7 @@ import 'package:hovedopgave_flutter_app/widgets/app_shell.dart';
 import 'package:hovedopgave_flutter_app/models/school_model.dart';
 import 'package:hovedopgave_flutter_app/widgets/school_card.dart';
 import 'package:hovedopgave_flutter_app/screen/school_details_screen.dart';
+import 'package:hovedopgave_flutter_app/widgets/filter_sheet.dart';
 
 void main() {
   runApp(DevicePreview(builder: (context) => MyApp()));
@@ -60,8 +61,14 @@ class MyApp extends StatelessWidget {
           }
           return SchoolDetailsScreen(school: school);
         },
-        '/main': (context) =>
-            const MyHomePage(title: 'Danmarks Private Skoler'),
+        '/main': (context) {
+          final initialGrundskole =
+              ModalRoute.of(context)?.settings.arguments == 'grundskoler';
+          return MyHomePage(
+            title: 'Danmarks Private Skoler',
+            initialGrundskole: initialGrundskole,
+          );
+        },
       },
       home: const MyHomePage(title: 'Danmarks Private Skoler'),
     );
@@ -69,21 +76,95 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    this.initialGrundskole = false,
+  });
 
   final String title;
+  final bool initialGrundskole;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Stores the current search and filter values.
+  // They start empty/default when the page is opened.
+  String searchQuery = '';
+  bool isGrundskole = false;
+  bool isGymnasial = false;
+  Set<String> selectedRegions = <String>{};
+  RangeValues postalCodeRange = const RangeValues(1000, 9999);
+
+  @override
+  void initState() {
+    super.initState();
+    isGrundskole = widget.initialGrundskole;
+  }
+
+// Adds or removes a region from the selected region filters.
+  void _setRegionSelected(String region, bool selected) {
+    setState(() {
+      if (selected) {
+        selectedRegions = {...selectedRegions, region};
+      } else {
+        selectedRegions = {...selectedRegions}..remove(region);
+      }
+    });
+  }
+
+  //used to reset filter options
+  void _resetFilters() {
+    setState(() {
+      isGrundskole = false;
+      isGymnasial = false;
+      selectedRegions = <String>{};
+      postalCodeRange = const RangeValues(1000, 9999);
+    });
+  }
+
   // This method is rerun every time setState is called, for instance as done
   @override
   Widget build(BuildContext context) {
-    //sort the schools alphabetically by name
-    final sortedSchools = [...schools]
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    // only active when exactly one of the options is selected. 
+    //If both are selected or both are unselected, all school types should be shown.
+    final hasSchoolTypeFilter = isGrundskole != isGymnasial;
+
+    // Create a new list containing only schools that match all active filters.
+    final filteredSchools = schools.where((school) {
+      // School type matches when:
+      // - no school type filter is active, OR
+      // - the school's type matches the selected type
+      final matchesSchoolType =
+          !hasSchoolTypeFilter || school.isGrundskole == isGrundskole;
+      // Region matches when:
+      // - no regions are selected, OR
+      // - the school's region is one of the selected regions
+      final matchesRegion =
+          selectedRegions.isEmpty || selectedRegions.contains(school.region);
+      // Checks if school's zip code falls within the selected postal code range
+      final matchesPostalCode =
+          school.zipCode >= postalCodeRange.start &&
+          school.zipCode <= postalCodeRange.end;
+      // Search matches when the school's name contains the text
+      // entered in the search bar (case-insensitive)
+      final matchesSearch = school.name.toLowerCase().contains(
+        searchQuery.toLowerCase(),
+      );
+
+      // A school is included in the filtered list only if it passes
+      // all active filters
+      return matchesSchoolType &&
+          matchesRegion &&
+          matchesPostalCode &&
+          matchesSearch;
+    }).toList();
+    //sort the filtered schools alphabetically by name
+    filteredSchools.sort(
+      (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+    );
 
     return AppShell(
       //loads the list of schools from the mockdata
@@ -95,16 +176,14 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 // Search bar
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Søg efter skole',
-                      prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
+                  child: SearchBar(
+                    hintText: 'Søg efter skole',
+                    leading: const Icon(Icons.search),
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
                   ),
                 ),
 
@@ -114,7 +193,75 @@ class _MyHomePageState extends State<MyHomePage> {
                   iconSize: 40,
                   icon: const Icon(Icons.tune),
                   onPressed: () {
-                    // Open filter menu
+                    //loads currently selected filter into BottomSheet
+                    var sheetIsGrundskole = isGrundskole;
+                    var sheetIsGymnasial = isGymnasial;
+                    var sheetSelectedRegions = {...selectedRegions};
+                    var sheetPostalCodeRange = postalCodeRange;
+
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) {
+                         // Allows the bottom sheet UI to update independently.
+                        return StatefulBuilder(
+                          builder: (context, setSheetState) {
+                            return FilterSheet(
+                              isGrundskole: sheetIsGrundskole,
+                              isGymnasial: sheetIsGymnasial,
+                              selectedRegions: sheetSelectedRegions,
+                              postalCodeRange: sheetPostalCodeRange,
+                              // Update the Grundskole filter.
+                              onGrundskoleChanged: (value) {
+                                setSheetState(() => sheetIsGrundskole = value);
+                                setState(() => isGrundskole = value);
+                              },
+                               // Update the Gymnasial filter.
+                              onGymnasialChanged: (value) {
+                                setSheetState(() => sheetIsGymnasial = value);
+                                setState(() => isGymnasial = value);
+                              },
+                              // Add or remove a selected region.
+                              onRegionChanged: (region, selected) {
+                                setSheetState(() {
+                                  if (selected) {
+                                    sheetSelectedRegions = {
+                                      ...sheetSelectedRegions,
+                                      region,
+                                    };
+                                  } else {
+                                    sheetSelectedRegions = {
+                                      ...sheetSelectedRegions,
+                                    }..remove(region);
+                                  }
+                                });
+                                _setRegionSelected(region, selected);
+                              },
+                              // Update the selected postal code range.
+                              onPostalCodeRangeChanged: (value) {
+                                setSheetState(
+                                  () => sheetPostalCodeRange = value,
+                                );
+                                setState(() => postalCodeRange = value);
+                              },
+                              // Reset all filters to their default values.
+                              onReset: () {
+                                setSheetState(() {
+                                  sheetIsGrundskole = false;
+                                  sheetIsGymnasial = false;
+                                  sheetSelectedRegions = <String>{};
+                                  sheetPostalCodeRange = const RangeValues(
+                                    1000,
+                                    9999,
+                                  );
+                                });
+                                _resetFilters();
+                              },
+                            );
+                          },
+                        );
+                      },
+                    );
                   },
                 ),
               ],
@@ -124,9 +271,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // School cards
           Expanded(
             child: ListView.builder(
-              itemCount: sortedSchools.length,
+              itemCount: filteredSchools.length,
               itemBuilder: (context, index) {
-                final school = sortedSchools[index];
+                final school = filteredSchools[index];
                 return SchoolCard(
                   school: school,
                   onTap: () => Navigator.pushNamed(
@@ -151,6 +298,7 @@ final schools = [
     address: 'Sortemosevej 15',
     zipCode: 3450,
     city: 'Allerød',
+    region: 'Hovedstaden',
     phoneNumber: '48 14 00 00',
     yearFounded: 1995,
     website: 'alleroedprivatskole.dk',
@@ -164,8 +312,7 @@ final schools = [
     titleText: 'Velkommen til Allerød Privatskole',
     descriptionText:
         'En kvalitetsorienteret skole med fokus på elevernes udvikling.',
-    imageUrl:
-        'https://via.placeholder.com/800x400'
+    imageUrl: 'https://via.placeholder.com/800x400',
   ),
 
   School(
@@ -173,6 +320,7 @@ final schools = [
     address: 'Hornevej 1',
     zipCode: 2770,
     city: 'Kastrup',
+    region: 'Hovedstaden',
     phoneNumber: '32 14 00 00',
     yearFounded: 1998,
     website: 'www.amagerprivatskole.dk',
@@ -189,8 +337,9 @@ final schools = [
   School(
     name: 'Borup Privatskole',
     address: 'Skolevej 5',
-    zipCode: 8000,
-    city: 'Aarhus C',
+    zipCode: 4140,
+    city: 'Borup',
+    region: 'Sjælland',
     phoneNumber: '86 12 34 56',
     yearFounded: 2000,
     website: 'https://www.borupprivatskole.dk',
@@ -208,6 +357,7 @@ final schools = [
     address: 'Privatskolevej 10',
     zipCode: 9000,
     city: 'Aalborg',
+    region: 'Nordjylland',
     phoneNumber: '98 12 34 56',
     yearFounded: 2005,
     website: 'https://www.aalborgprivatskole.dk',
@@ -222,4 +372,23 @@ final schools = [
     descriptionText:
         'En pædagogisk skole med fokus på elevernes udvikling og velvære.',
   ),
+  School(
+    name: 'Københavns private gymnasium',
+    address: 'skolevej 4',
+    zipCode: 2000,
+    city: 'København',
+    region: 'Hovedstaden',
+    phoneNumber: '30 30 30 30',
+    yearFounded: 1980,
+    website: 'eksempel.dk',
+    email: 'info@eksempel.dk',
+    numberOfClasses: 40,
+    levelStart: '1.G',
+    levelEnd: '3.G',
+    classQuota: '24',
+    numberOfStudents: 2000,
+    numberOfStudentsInSFO: 0,
+    titleText: 'Velkommen til et Gymnasie med fokus på udvikling og læring',
+    descriptionText: 'Vi er en stor skole i hjertet af kbh.'
+  )
 ];

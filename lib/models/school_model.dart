@@ -4,6 +4,7 @@ class School{
   String address;
   int zipCode;
   String city;
+  String region;
   String phoneNumber;
   int yearFounded;
   String website;
@@ -13,16 +14,21 @@ class School{
   String levelEnd;
   String classQuota;
   int numberOfStudents;
-  int numberOfStudentsInSFO;
+  int? numberOfStudentsInSFO;
   String? titleText;
   String? descriptionText;
   String? imageUrl;
+  bool isGrundskole;
+  bool isGymnasial;
+  
+
 
   School({
     required this.name, 
     required this.address, 
     required this.zipCode, 
     required this.city,
+    required this.region,
     required this.phoneNumber,
     required this.yearFounded,
     required this.website,
@@ -32,9 +38,10 @@ class School{
     required this.levelEnd,
     required this.classQuota,
     required this.numberOfStudents,
-    required this.numberOfStudentsInSFO,
+    this.numberOfStudentsInSFO,
     this.titleText,
     this.descriptionText,
     this.imageUrl,
-  });
+  }) : isGrundskole = levelEnd != '3.G',
+       isGymnasial = levelStart == '1.G' || levelEnd == '3.G';
 }
