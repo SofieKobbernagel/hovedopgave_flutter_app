@@ -45,8 +45,14 @@ class MyApp extends StatelessWidget {
           }
           return SchoolDetailsScreen(school: school);
         },
-        '/main': (context) =>
-            const MyHomePage(title: 'Danmarks Private Skoler'),
+        '/main': (context) {
+          final initialGrundskole =
+              ModalRoute.of(context)?.settings.arguments == 'grundskoler';
+          return MyHomePage(
+            title: 'Danmarks Private Skoler',
+            initialGrundskole: initialGrundskole,
+          );
+        },
       },
       home: const MyHomePage(title: 'Danmarks Private Skoler'),
     );
@@ -54,9 +60,14 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    this.initialGrundskole = false,
+  });
 
   final String title;
+  final bool initialGrundskole;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -70,6 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isGymnasial = false;
   Set<String> selectedRegions = <String>{};
   RangeValues postalCodeRange = const RangeValues(1000, 9999);
+
+  @override
+  void initState() {
+    super.initState();
+    isGrundskole = widget.initialGrundskole;
+  }
 
 // Adds or removes a region from the selected region filters.
   void _setRegionSelected(String region, bool selected) {

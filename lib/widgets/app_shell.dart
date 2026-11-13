@@ -10,9 +10,8 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Tapping either logo returns to the first route in the navigation stack.
         title: InkWell(
-          onTap: () => Navigator.popUntil(context, (route) => route.isFirst),
+          onTap: () => _goToMainAndReset(context),
           child: Image.asset('assets/images/DPS-Logo.png', height: 40),
         ),
         actions: [
@@ -20,9 +19,7 @@ class AppShell extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8.0),
             //inkwell is a widget that responds to touch events
             child: InkWell(
-              onTap: () =>
-              // Tapping either logo returns to the first route in the navigation stack.
-                  Navigator.popUntil(context, (route) => route.isFirst),
+              onTap: () => _goToMainAndReset(context),
               child: Image.asset(
                 'assets/images/DPS-Round-Logo.png',
                 height: 50,
@@ -52,7 +49,11 @@ class AppShell extends StatelessWidget {
                       child: const Text('Alle medlemsskoler'),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () => _openRoute(
+                        context,
+                        '/main',
+                        arguments: 'grundskoler',
+                      ),
                       child: const Text('Grundskoler'),
                     ),
                     TextButton(
@@ -97,9 +98,21 @@ class AppShell extends StatelessWidget {
     );
   }
 
+  void _goToMainAndReset(BuildContext context) {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/main',
+      (route) => false,
+    );
+  }
+
 // Helper method to open a route and close the drawer
-  void _openRoute(BuildContext context, String routeName) {
+  void _openRoute(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) {
     Navigator.pop(context);
-    Navigator.pushNamed(context, routeName);
+    Navigator.pushNamed(context, routeName, arguments: arguments);
   }
 }
