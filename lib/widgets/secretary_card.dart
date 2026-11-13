@@ -26,41 +26,61 @@ class SecretaryCard extends StatelessWidget {
       color: const Color(0xFF535353),
     );
 
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            secretary.imageUrl,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
-          Text(
-            secretary.name,
-            style: titleStyle,
-          ),
-          Text(
-            secretary.role,
-            style: textStyle,
-          ),
-          const Divider(
-            color: Color(0xFFE5E5E5),
-          ),
-          Text(
-            secretary.email,
-            style: textStyle,
-          ),
-          Text(
-            secretary.phoneNumber,
-            style: textStyle,
-          ),
-          Text(
-            secretary.responsibilityArea ?? '',
-            style: textStyle,
-          ),
-          SizedBox(height: 16),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32.0), // Controls the space between cards
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Profile Picture
+            Image.network(
+              secretary.imageUrl,
+              width: 100,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(width: 12),
+
+            // 2. Vertical Red Divider
+            Container(
+              width: 2,
+              color: const Color(0xFF9E1B1E),
+            ),
+            const SizedBox(width: 16),
+
+            // 3. Information Box
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    secretary.name,
+                    style: titleStyle,
+                  ),
+                  Text(
+                    secretary.role,
+                    style: textStyle,
+                  ),
+                  const Divider(
+                    color: Color(0xFFE5E5E5),
+                  ),
+                  Text(
+                    secretary.email,
+                    style: textStyle,
+                  ),
+                  Text(
+                    secretary.phoneNumber,
+                    style: textStyle,
+                  ),
+                  Text(
+                    secretary.responsibilityArea ?? '',
+                    style: textStyle,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

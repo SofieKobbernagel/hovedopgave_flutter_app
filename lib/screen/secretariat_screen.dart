@@ -16,7 +16,7 @@ class SecretariatScreen extends StatelessWidget {
             Text(
               'Danmarks Private Skolers sekretariat ligger i København. Sekretariatets medarbejdere har faglig ekspertise inden for skolerådgivning, kommunikation, interessevaretagelse og kursusvirksomhed.',
               style: Theme.of(context).textTheme.headlineSmall
-                  ?.copyWith(fontSize: 20, fontWeight: FontWeight.w500),
+                  ?.copyWith(fontSize: 20, fontWeight: FontWeight.w300),
             ),
             SizedBox(height: 16),
 
@@ -44,7 +44,7 @@ final secretariatMembers = [
     role: 'Sekretariatschef',
     email: 'sm1@privateskoler.dk',
     phoneNumber: '40 01 01 01',
-    responsibilityArea: 'Sekretariat',
+    responsibilityArea: 'Sekretariat \nKommunikation \nInteressevaretagelse \nKursusvirksomhed',
   ),
   Secretary(
     imageUrl: 'https://via.placeholder.com/800x400',
@@ -52,6 +52,22 @@ final secretariatMembers = [
     role: 'Sekretariatsmedarbejder',
     email: 'sm2@privateskoler.dk',
     phoneNumber: '40 01 01 02',
+    responsibilityArea: 'Sekretariat',
+  ),
+  Secretary(
+    imageUrl: 'https://via.placeholder.com/800x400',
+    name: 'Secretariat 3',
+    role: 'Sekretariatsmedarbejder',
+    email: 'sm3@privateskoler.dk',
+    phoneNumber: '40 01 01 03',
+    responsibilityArea: 'Sekretariat \nKommunikation',
+  ),
+  Secretary(
+    imageUrl: 'https://via.placeholder.com/800x400',
+    name: 'Secretariat 4',
+    role: 'Sekretariatsmedarbejder',
+    email: 'sm4@privateskoler.dk',
+    phoneNumber: '40 01 01 04',
     responsibilityArea: 'Sekretariat',
   ),
 ];
