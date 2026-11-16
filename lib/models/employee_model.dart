@@ -2,20 +2,20 @@ class Employee{
   String role;
   String name;
   String? email;
-  String? phone;
+  String? phoneNumber;
   int? yearAppointed;
   int? yearEmployed;
   String? other;
-  String? photo;
+  String? imageUrl;
 
   Employee({
     required this.role,
     required this.name,
     this.email,
-    this.phone,
+    this.phoneNumber,
     this.yearAppointed,
     this.yearEmployed,
     this.other,
-    this.photo,
+    this.imageUrl,
   });
 }

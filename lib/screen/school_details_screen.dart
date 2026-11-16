@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hovedopgave_flutter_app/widgets/app_shell.dart';
 import 'package:hovedopgave_flutter_app/models/school_model.dart';
+import 'package:hovedopgave_flutter_app/models/employee_model.dart';
+import 'package:hovedopgave_flutter_app/widgets/employee_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SchoolDetailsScreen extends StatelessWidget {
@@ -89,9 +91,56 @@ class SchoolDetailsScreen extends StatelessWidget {
             const Divider(
               color: Color.fromRGBO(188, 49, 43, 1),
             ),
+
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: employeeMembers.length,
+              itemBuilder: (context, index) {
+                final employeeMember = employeeMembers[index];
+                return EmployeeCard(employee: employeeMember);
+              },
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+// Mockdata
+final employeeMembers = [
+  Employee(
+    imageUrl: 'https://via.placeholder.com/800x400',
+    name: 'Ågon Ledelsen',
+    role: 'Skoleleder',
+    email: 'ÅL@privateskoler.dk',
+    yearAppointed: 2010,
+    yearEmployed: 2005,
+  ),
+    Employee(
+    imageUrl: 'https://via.placeholder.com/800x400',
+    name: 'Vicki Bertelsen',
+    role: 'Viceskoleleder',
+    email: 'VB@privateskoler.dk',
+    phoneNumber: '01 01 01 02',
+    yearEmployed: 2008,
+  ),
+    Employee(
+    imageUrl: 'https://via.placeholder.com/800x400',
+    name: 'Sofus Kindergaard',
+    role: 'SFO-Leder',
+    email: 'SK@privateskoler.dk',
+    phoneNumber: '01 01 01 03',
+    yearAppointed: 2018,
+    yearEmployed: 2013,
+    other: 'Ansvarlig for SFO og fritidsaktiviteter',
+  ),
+  Employee(
+    imageUrl: 'https://via.placeholder.com/800x400',
+    name: 'Betina Fore',
+    role: 'Bestyrelsesformand',
+    email: 'BF@privateskoler.dk',
+    phoneNumber: '01 01 01 04',
+  ),
+];
