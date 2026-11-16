@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:hovedopgave_flutter_app/screen/about_us_screen.dart';
 import 'package:hovedopgave_flutter_app/screen/board_screen.dart';
 import 'package:hovedopgave_flutter_app/screen/secretariat_screen.dart';
@@ -8,9 +9,16 @@ import 'package:hovedopgave_flutter_app/models/school_model.dart';
 import 'package:hovedopgave_flutter_app/widgets/school_card.dart';
 import 'package:hovedopgave_flutter_app/screen/school_details_screen.dart';
 import 'package:hovedopgave_flutter_app/widgets/filter_sheet.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+final _denmarkBounds = LatLngBounds(
+  const LatLng(54.5, 8.0), // Sydvest
+  const LatLng(57.9, 12.8), // Nordøst
+);
 
 void main() {
-  runApp(DevicePreview(builder: (context) => MyApp()));
+  runApp(DevicePreview(builder: (context) => const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,6 +32,8 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Danmarks Private Skoler',
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
       theme: theme.copyWith(
         textTheme: theme.textTheme.copyWith(
           displayLarge: titleTextTheme.displayLarge,
@@ -72,7 +82,6 @@ class MyApp extends StatelessWidget {
             initialGymnasial: initialGymnasial,
           );
         },
-        
       },
       home: const MyHomePage(title: 'Danmarks Private Skoler'),
     );
@@ -96,6 +105,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //setup for map
+  final MapController mapController = MapController();
+  late final MapOptions _mapOptions = MapOptions(
+    initialCenter: const LatLng(56.1, 10.5),
+    initialZoom: 6.4,
+    cameraConstraint: CameraConstraint.containCenter(bounds: _denmarkBounds),
+    minZoom: 6.4,
+    maxZoom: 18,
+  );
   // Stores the current search and filter values.
   // They start empty/default when the page is opened.
   String searchQuery = '';
@@ -111,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
     isGymnasial = widget.initialGymnasial;
   }
 
-// Adds or removes a region from the selected region filters.
+  // Adds or removes a region from the selected region filters.
   void _setRegionSelected(String region, bool selected) {
     setState(() {
       if (selected) {
@@ -135,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // This method is rerun every time setState is called, for instance as done
   @override
   Widget build(BuildContext context) {
-    // only active when exactly one of the options is selected. 
+    // only active when exactly one of the options is selected.
     //If both are selected or both are unselected, all school types should be shown.
     final hasSchoolTypeFilter = isGrundskole != isGymnasial;
 
@@ -174,128 +192,194 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return AppShell(
-      //loads the list of schools from the mockdata
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Search bar
-                Expanded(
-                  child: SearchBar(
-                    hintText: 'Søg efter skole',
-                    leading: const Icon(Icons.search),
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                      });
-                    },
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              //map
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.45,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: FlutterMap(
+                    mapController: mapController,
+                    options: _mapOptions,
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName:
+                            'com.example.hovedopgave_flutter_app',
+                      ),
+                      MediaQuery.removePadding(
+                        context: context,
+                        removeBottom: true,
+                        child: SimpleAttributionWidget(
+                          alignment: Alignment.bottomRight,
+                          source: const Text('OpenStreetMap contributors'),
+                          onTap: () {
+                            launchUrl(
+                              Uri.parse(
+                                'https://www.openstreetmap.org/copyright',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
+            ),
+          ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _SearchFilterHeaderDelegate(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SearchBar(
+                        hintText: 'Søg efter skole',
+                        leading: const Icon(Icons.search),
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    IconButton(
+                      iconSize: 40,
+                      icon: const Icon(Icons.tune),
+                      onPressed: () {
+                        var sheetIsGrundskole = isGrundskole;
+                        var sheetIsGymnasial = isGymnasial;
+                        var sheetSelectedRegions = {...selectedRegions};
+                        var sheetPostalCodeRange = postalCodeRange;
 
-                const SizedBox(width: 12), //space
-                // Filter button
-                IconButton(
-                  iconSize: 40,
-                  icon: const Icon(Icons.tune),
-                  onPressed: () {
-                    //loads currently selected filter into BottomSheet
-                    var sheetIsGrundskole = isGrundskole;
-                    var sheetIsGymnasial = isGymnasial;
-                    var sheetSelectedRegions = {...selectedRegions};
-                    var sheetPostalCodeRange = postalCodeRange;
-
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                         // Allows the bottom sheet UI to update independently.
-                        return StatefulBuilder(
-                          builder: (context, setSheetState) {
-                            return FilterSheet(
-                              isGrundskole: sheetIsGrundskole,
-                              isGymnasial: sheetIsGymnasial,
-                              selectedRegions: sheetSelectedRegions,
-                              postalCodeRange: sheetPostalCodeRange,
-                              // Update the Grundskole filter.
-                              onGrundskoleChanged: (value) {
-                                setSheetState(() => sheetIsGrundskole = value);
-                                setState(() => isGrundskole = value);
-                              },
-                               // Update the Gymnasial filter.
-                              onGymnasialChanged: (value) {
-                                setSheetState(() => sheetIsGymnasial = value);
-                                setState(() => isGymnasial = value);
-                              },
-                              // Add or remove a selected region.
-                              onRegionChanged: (region, selected) {
-                                setSheetState(() {
-                                  if (selected) {
-                                    sheetSelectedRegions = {
-                                      ...sheetSelectedRegions,
-                                      region,
-                                    };
-                                  } else {
-                                    sheetSelectedRegions = {
-                                      ...sheetSelectedRegions,
-                                    }..remove(region);
-                                  }
-                                });
-                                _setRegionSelected(region, selected);
-                              },
-                              // Update the selected postal code range.
-                              onPostalCodeRangeChanged: (value) {
-                                setSheetState(
-                                  () => sheetPostalCodeRange = value,
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return StatefulBuilder(
+                              builder: (context, setSheetState) {
+                                return FilterSheet(
+                                  isGrundskole: sheetIsGrundskole,
+                                  isGymnasial: sheetIsGymnasial,
+                                  selectedRegions: sheetSelectedRegions,
+                                  postalCodeRange: sheetPostalCodeRange,
+                                  onGrundskoleChanged: (value) {
+                                    setSheetState(
+                                      () => sheetIsGrundskole = value,
+                                    );
+                                    setState(() => isGrundskole = value);
+                                  },
+                                  onGymnasialChanged: (value) {
+                                    setSheetState(
+                                      () => sheetIsGymnasial = value,
+                                    );
+                                    setState(() => isGymnasial = value);
+                                  },
+                                  onRegionChanged: (region, selected) {
+                                    setSheetState(() {
+                                      if (selected) {
+                                        sheetSelectedRegions = {
+                                          ...sheetSelectedRegions,
+                                          region,
+                                        };
+                                      } else {
+                                        sheetSelectedRegions = {
+                                          ...sheetSelectedRegions,
+                                        }..remove(region);
+                                      }
+                                    });
+                                    _setRegionSelected(region, selected);
+                                  },
+                                  onPostalCodeRangeChanged: (value) {
+                                    setSheetState(
+                                      () => sheetPostalCodeRange = value,
+                                    );
+                                    setState(() => postalCodeRange = value);
+                                  },
+                                  onReset: () {
+                                    setSheetState(() {
+                                      sheetIsGrundskole = false;
+                                      sheetIsGymnasial = false;
+                                      sheetSelectedRegions = <String>{};
+                                      sheetPostalCodeRange = const RangeValues(
+                                        1000,
+                                        9999,
+                                      );
+                                    });
+                                    _resetFilters();
+                                  },
                                 );
-                                setState(() => postalCodeRange = value);
-                              },
-                              // Reset all filters to their default values.
-                              onReset: () {
-                                setSheetState(() {
-                                  sheetIsGrundskole = false;
-                                  sheetIsGymnasial = false;
-                                  sheetSelectedRegions = <String>{};
-                                  sheetPostalCodeRange = const RangeValues(
-                                    1000,
-                                    9999,
-                                  );
-                                });
-                                _resetFilters();
                               },
                             );
                           },
                         );
                       },
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-
-          // School cards
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredSchools.length,
-              itemBuilder: (context, index) {
-                final school = filteredSchools[index];
-                return SchoolCard(
-                  school: school,
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/school-details',
-                    arguments: school,
-                  ),
-                );
-              },
+              ),
             ),
           ),
         ],
+        body: ListView.builder(
+          itemCount: filteredSchools.length,
+          itemBuilder: (context, index) {
+            final school = filteredSchools[index];
+            return SchoolCard(
+              school: school,
+              onTap: () => Navigator.pushNamed(
+                context,
+                '/school-details',
+                arguments: school,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
+}
+
+// Keeps the search bar and filter button pinned while the map scrolls away.
+class _SearchFilterHeaderDelegate extends SliverPersistentHeaderDelegate {
+  const _SearchFilterHeaderDelegate({required this.child});
+
+  final Widget child;
+
+  // A fixed height prevents the pinned header from shrinking as the page scrolls.
+  @override
+  double get minExtent => 88;
+
+  @override
+  double get maxExtent => 88;
+
+  // Adds a background so scrolling school cards do not show through the header.
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      elevation: overlapsContent ? 2 : 0,
+      child: child,
+    );
+  }
+
+  // Rebuilds the header when the sliver supplies an updated delegate.
+  @override
+  bool shouldRebuild(_SearchFilterHeaderDelegate oldDelegate) => true;
 }
 
 //mockdata DELETE later
@@ -396,6 +480,6 @@ final schools = [
     numberOfStudents: 2000,
     numberOfStudentsInSFO: 0,
     titleText: 'Velkommen til et Gymnasie med fokus på udvikling og læring',
-    descriptionText: 'Vi er en stor skole i hjertet af kbh.'
-  )
+    descriptionText: 'Vi er en stor skole i hjertet af kbh.',
+  ),
 ];
