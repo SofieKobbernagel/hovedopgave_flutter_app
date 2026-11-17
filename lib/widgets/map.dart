@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:hovedopgave_flutter_app/models/school_model.dart';
 import 'package:hovedopgave_flutter_app/widgets/school_card.dart';
 import 'package:latlong2/latlong.dart';
@@ -32,43 +33,65 @@ class SchoolMap extends StatelessWidget {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.example.hovedopgave_flutter_app',
         ),
-        MarkerLayer(
-          markers: schools.map((school) {
-            return Marker(
-              point: LatLng(school.latitude, school.longitude),
-              width: 40,
-              height: 40,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                tooltip: school.name,
-                onPressed: () {
-                  showDialog<void>(
-                    context: context,
-                    builder: (dialogContext) => Dialog(
-                      child: SchoolCard(
-                        school: school,
-                        onTap: () {
-                          Navigator.pop(dialogContext);
-                          Navigator.of(context)
-                              .pushNamed('/school-details', arguments: school);
-                        },
-                        trailing: IconButton(
-                          tooltip: 'Luk',
-                          icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.pop(dialogContext),
+        MarkerClusterLayerWidget(
+          options: MarkerClusterLayerOptions(
+            maxClusterRadius: 50,
+            size: const Size(44, 44),
+            maxZoom: 18,
+            disableClusteringAtZoom: 16,
+            markerChildBehavior: true,
+            markers: schools.map((school) {
+              return Marker(
+                point: LatLng(school.latitude, school.longitude),
+                width: 40,
+                height: 40,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  tooltip: school.name,
+                  onPressed: () {
+                    showDialog<void>(
+                      context: context,
+                      builder: (dialogContext) => Dialog(
+                        child: SchoolCard(
+                          school: school,
+                          onTap: () {
+                            Navigator.pop(dialogContext);
+                            Navigator.of(
+                              context,
+                            ).pushNamed('/school-details', arguments: school);
+                          },
+                          trailing: IconButton(
+                            tooltip: 'Luk',
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.pop(dialogContext),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                  size: 40,
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                    size: 40,
+                  ),
+                ),
+              );
+            }).toList(),
+            builder: (context, markers) => Container(
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                markers.length.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            );
-          }).toList(),
+            ),
+          ),
         ),
         MediaQuery.removePadding(
           context: context,
