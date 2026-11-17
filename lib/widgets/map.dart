@@ -20,6 +20,7 @@ class SchoolMap extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlutterMap(
       options: MapOptions(
+        //start settings
         initialCenter: const LatLng(56.1, 10.5),
         initialZoom: 6.4,
         cameraConstraint: CameraConstraint.containCenter(
@@ -35,8 +36,8 @@ class SchoolMap extends StatelessWidget {
         ),
         MarkerClusterLayerWidget(
           options: MarkerClusterLayerOptions(
-            maxClusterRadius: 50,
-            size: const Size(44, 44),
+            maxClusterRadius: 50, //distance from other markers before forming cluster
+            size: const Size(44, 44), //size of cluster
             maxZoom: 18,
             disableClusteringAtZoom: 16,
             markerChildBehavior: true,
@@ -47,7 +48,7 @@ class SchoolMap extends StatelessWidget {
                 height: 40,
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  tooltip: school.name,
+                  tooltip: school.name, //shows name when you hover 
                   onPressed: () {
                     showDialog<void>(
                       context: context,
@@ -93,6 +94,7 @@ class SchoolMap extends StatelessWidget {
             ),
           ),
         ),
+        //legally required watermark/copyright
         MediaQuery.removePadding(
           context: context,
           removeBottom: true,

@@ -188,7 +188,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: SchoolMap(schools: schools),
+                  //loads map with filtered schools
+                  child: SchoolMap(schools: filteredSchools),
                 ),
               ),
             ),
