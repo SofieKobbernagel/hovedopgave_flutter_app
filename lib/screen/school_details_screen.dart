@@ -92,6 +92,8 @@ class SchoolDetailsScreen extends StatelessWidget {
               color: Color.fromRGBO(188, 49, 43, 1),
             ),
 
+            const SizedBox(height: 8),
+
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
