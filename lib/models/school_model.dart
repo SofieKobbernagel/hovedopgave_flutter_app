@@ -1,25 +1,29 @@
 class School{
-  //final means it can only be set once and cannot be changed after that.
+// final means the value can only be assigned once when the object is created.
+// The value cannot be changed through this School object, but a new School
+// object with updated values can be loaded from the database.
   final String name;
-  String address;
-  int zipCode;
-  String city;
-  String region;
-  String phoneNumber;
-  int yearFounded;
-  String website;
-  String email;
-  int numberOfClasses;
-  String levelStart;
-  String levelEnd;
-  String classQuota;
-  int numberOfStudents;
-  int? numberOfStudentsInSFO;
-  String? titleText;
-  String? descriptionText;
-  String? imageUrl;
-  bool isGrundskole;
-  bool isGymnasial;
+  final String address;
+  final int zipCode;
+  final String city;
+  final String region;
+  final String phoneNumber;
+  final int yearFounded;
+  final String website;
+  final String email;
+  final int numberOfClasses;
+  final String levelStart;
+  final String levelEnd;
+  final String classQuota;
+  final int numberOfStudents;
+  final int? numberOfStudentsInSFO;
+  final String? titleText;
+  final String? descriptionText;
+  final String? imageUrl;
+  final bool isGrundskole;
+  final bool isGymnasial;
+  final double latitude;
+  final double longitude;
   
 
 
@@ -42,6 +46,8 @@ class School{
     this.titleText,
     this.descriptionText,
     this.imageUrl,
+    required this.latitude,
+    required this.longitude,
   }) : isGrundskole = levelEnd != '3.G',
        isGymnasial = levelStart == '1.G' || levelEnd == '3.G';
 }

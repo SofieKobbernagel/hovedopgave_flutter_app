@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class SchoolCard extends StatelessWidget {
   final School school;
   final VoidCallback? onTap;
+  final Widget? trailing;
 
   //constructor
   const SchoolCard({
@@ -12,6 +13,7 @@ class SchoolCard extends StatelessWidget {
     //when creating a SchoolCard, you must provide a School object
     required this.school,
     this.onTap,
+    this.trailing,
   });
 
   @override
@@ -39,39 +41,43 @@ class SchoolCard extends StatelessWidget {
     return Card(
       //adds space around the card
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: InkWell(onTap: onTap, //calls the onTap function when the card is tapped
+      child: InkWell(
+        onTap: onTap, //calls the onTap function when the card is tapped
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Text(
-              school.name,
-              style: titleStyle,
-            ),
-            const Divider(
-              color: Color.fromRGBO(188, 49, 43, 1),
-              //evt. thickness
-            ),
-            Text(school.address, style: cardTextStyle),
-            const SizedBox(
-              height: 8,
-            ), //adds space between the address and the zip code/city
-
-            Text('${school.zipCode} ${school.city}', style: cardTextStyle),
-            const SizedBox(height: 8),
-
-            //link to the school's website, opens in a new tab
-            InkWell(
-              onTap: () async {
-                await launchUrl(websiteUrl);
-              },
-              child: Text(
-                school.website,
-                style: const TextStyle(color: Color(0xFFC00000)),
+              Row(
+                children: [
+                  Expanded(child: Text(school.name, style: titleStyle)),
+                  ?trailing,
+                ],
               ),
-            ),
-          ],
+              const Divider(
+                color: Color.fromRGBO(188, 49, 43, 1),
+                //evt. thickness
+              ),
+              Text(school.address, style: cardTextStyle),
+              const SizedBox(
+                height: 8,
+              ), //adds space between the address and the zip code/city
+
+              Text('${school.zipCode} ${school.city}', style: cardTextStyle),
+              const SizedBox(height: 8),
+
+              //link to the school's website, opens in a new tab
+              InkWell(
+                onTap: () async {
+                  await launchUrl(websiteUrl);
+                },
+                child: Text(
+                  school.website,
+                  style: const TextStyle(color: Color(0xFFC00000)),
+                ),
+              ),
+            ],
           ),
         ),
       ),
