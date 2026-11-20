@@ -10,15 +10,17 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         //inkwell is a widget that responds to touch events
         title: InkWell(
           onTap: () => _goToMainAndReset(context),
           child: Image.asset('assets/images/DPS-Logo.png', height: 40),
         ),
         actions: [
           Padding(
+            // Adds spacing between the round logo and the edge of the screen
             padding: const EdgeInsets.only(right: 8.0),
-            //inkwell is a widget that responds to touch events
             child: InkWell(
+              // Round logo, alternative shortcut to main page.
               onTap: () => _goToMainAndReset(context),
               child: Image.asset(
                 'assets/images/DPS-Round-Logo.png',
