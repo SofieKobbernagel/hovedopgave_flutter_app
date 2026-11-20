@@ -47,7 +47,13 @@ class AppShell extends StatelessWidget {
                   children: [
                     TextButton(
                      onPressed: () => _openRoute(context, '/main'),
-                      child: const Text('Alle medlemsskoler'),
+                      child: const Text(
+                        'Alle medlemsskoler',
+                        style: TextStyle(
+                          color: Color(0xFFC00000)
+                        )
+                      ),
+                      
                     ),
                     TextButton(
                       onPressed: () => _openRoute(
@@ -55,7 +61,12 @@ class AppShell extends StatelessWidget {
                         '/main',
                         arguments: 'grundskoler',
                       ),
-                      child: const Text('Grundskoler'),
+                      child: const Text(
+                        'Grundskoler',
+                         style: TextStyle(
+                          color: Color(0xFFC00000)
+                        )
+                      ),
                     ),
                     TextButton(
                       onPressed: () => _openRoute(
@@ -63,7 +74,12 @@ class AppShell extends StatelessWidget {
                         '/main',
                         arguments: 'gymnasier',
                       ),
-                      child: const Text('Gymnasiale uddannelser'),
+                      child: const Text(
+                        'Gymnasiale uddannelser',
+                          style: TextStyle(
+                          color: Color(0xFFC00000)
+                        )
+                      ),
                     ),
                   ],
                 ),
@@ -81,15 +97,30 @@ class AppShell extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () => _openRoute(context, '/about-us'),
-                      child: const Text('Om foreningen'),
+                      child: const Text(
+                        'Om foreningen',
+                          style: TextStyle(
+                          color: Color(0xFFC00000)
+                        )
+                      ),
                     ),
                     TextButton(
                       onPressed: () => _openRoute(context, '/board'),
-                      child: const Text('Foreningens bestyrelse'),
+                      child: const Text(
+                      'Foreningens bestyrelse',
+                        style: TextStyle(
+                          color: Color(0xFFC00000)
+                        )
+                      ),
                     ),
                     TextButton(
                       onPressed: () => _openRoute(context, '/secretariat'),
-                      child: const Text('Foreningens sekretariat'),
+                      child: const Text(
+                        'Foreningens sekretariat',
+                          style: TextStyle(
+                          color: Color(0xFFC00000)
+                        )
+                      ),
                     ),
                   ],
                 ),
