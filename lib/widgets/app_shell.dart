@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppShell extends StatelessWidget {
-  const AppShell({super.key, required this.body, this.floatingActionButton});
+  const AppShell({super.key, required this.body});
 
   final Widget body;
-  final Widget? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +99,6 @@ class AppShell extends StatelessWidget {
         ),
       ),
       body: body,
-      floatingActionButton: floatingActionButton,
     );
   }
 
